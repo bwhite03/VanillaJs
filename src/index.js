@@ -1,12 +1,26 @@
 console.log('code is up and running');
 import { isValid, formatMoney } from './utils';
-import { data } from './data';
+import { getData, getCategories, updateData, delItem } from './api';
 import './styles.css';
 
+const dataLoaded = new CustomEvent('onDataLoaded');
+window.addEventListener('onDataLoaded', () => {
+  console.log('onDataLoaded has been dispatched');
+  runSampleCode();
+});
+
+const categoriesLoaded = new CustomEvent('onCategoriesLoaded');
+window.addEventListener('onCategoriesLoaded', () => {
+  console.log('onCategoriesLoaded has been dispatched');
+  runCategoryCode();
+});
+
+let data = [];
 let filteredData = data;
 
-const state = {
+export const state = {
   items: data,
+  categories: [],
   currentItem: {
     name: '',
     size: '',
@@ -14,6 +28,40 @@ const state = {
     category: '',
   },
 };
+
+const getOurData = () => {
+  getData()
+    .then((res) => {
+      const j = res.data;
+      if (j.error === 0) {
+        data = j.data;
+        filteredData = j.data;
+        state.items = j.data;
+        window.dispatchEvent(dataLoaded);
+        buildTable();
+      } else {
+        console.log(j.msg);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+getOurData();
+
+getCategories()
+  .then((res) => {
+    const j = res.data;
+    if (j.error === 0) {
+      state.categories = j.data;
+      window.dispatchEvent(categoriesLoaded);
+    } else {
+      console.log(j.msg);
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const getTotal = () => {
   return filteredData.reduce((acc, cur) => {
@@ -167,69 +215,83 @@ const buildFilterBox = () => {
 buildFilterBox();
 
 const deleteItem = (id) => {
-  const itemIndex = state.items.findIndex((i) => i.id === id);
-
-  if (itemIndex && itemIndex > 0) {
-    const copiedItems = Array.from(state.items);
-    copiedItems.splice(itemIndex, 1);
-    state.items = copiedItems;
-    filteredData = copiedItems;
-    buildTable();
-  }
+  delItem(id)
+    .then((res) => {
+      const j = res.data;
+      if (j.error === 0) {
+        getOurData();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
-
-const filterData = (property) => {
-  return function (value) {
-    return data.filter((i) => i[property] == value);
-  };
-};
-
-const curriedFilter = filterData('category');
-const fruits = curriedFilter('fruit');
-const bevs = curriedFilter('beverages');
-const candy = curriedFilter('candy');
-console.log('fruits', fruits);
-console.log('bevs', bevs);
-console.log('candy', candy);
-
-const findCategoryMostExpensiveItem = (array) => {
-  return array.reduce((acc, cur) => {
-    return acc.price > cur.price ? acc : cur;
-  }, 0);
-};
-
-const compose =
-  (...fns) =>
-  (...args) =>
-    fns.reduceRight((res, fn) => [fn.call(null, ...res)], args)[0];
-
-const pipedFn = compose(
-  findCategoryMostExpensiveItem,
-  curriedFilter
-)('beverages');
-console.log(pipedFn);
 
 const saveItem = () => {
-  const copiedItems = [...state.items, state.currentItem];
-  state.item = copiedItems;
-  filteredData = copiedItems;
-  buildTable();
-  clearForm();
+  updateData()
+    .then((res) => {
+      const j = res.data;
+      if (j.error === 0) {
+        getOurData();
+        clearForm();
+      } else {
+        console.log(j.msg);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const saveButton = document.getElementById('save-item');
 saveButton.addEventListener('click', saveItem);
 
-const createItemCategory = () => {
-  const categories = data.unique('category');
-  let html = `<select id="category"><option value="0">Select a category</option>`;
-  categories.map((c) => {
-    html += `<option value="${c}">${c}</option>`;
-  });
-  html += `</select>`;
-  document.getElementById('item-category').innerHTML = html;
-  const newSelect = document.getElementById('category');
-  newSelect.addEventListener('change', changeState);
-};
+function runSampleCode() {
+  buildFilterBox();
 
-createItemCategory();
+  const filterData = (property) => {
+    return function (value) {
+      return data.filter((i) => i[property] == value);
+    };
+  };
+
+  const curriedFilter = filterData('category');
+  const fruits = curriedFilter('fruit');
+  const bevs = curriedFilter('beverages');
+  const candy = curriedFilter('candy');
+  console.log('fruits', fruits);
+  console.log('bevs', bevs);
+  console.log('candy', candy);
+
+  const findCategoryMostExpensiveItem = (array) => {
+    return array.reduce((acc, cur) => {
+      return acc.price > cur.price ? acc : cur;
+    }, 0);
+  };
+
+  const compose =
+    (...fns) =>
+    (...args) =>
+      fns.reduceRight((res, fn) => [fn.call(null, ...res)], args)[0];
+
+  const pipedFn = compose(
+    findCategoryMostExpensiveItem,
+    curriedFilter
+  )('beverages');
+  console.log(pipedFn);
+}
+
+function runCategoryCode() {
+  const createItemCategory = () => {
+    let html = `<select id="category"><option value="0">Select a category</option>`;
+    state.categories.map((c) => {
+      html += `<option value="${c.id}">${c.name}</option>`;
+    });
+    html += `</select>`;
+    document.getElementById('item-category').innerHTML = html;
+    const newSelect = document.getElementById('category');
+    newSelect.addEventListener('change', changeState);
+  };
+
+  createItemCategory();
+}
