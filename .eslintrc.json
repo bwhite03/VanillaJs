@@ -1,10 +1,9 @@
 {
   "extends": ["eslint:recommended", "plugin:import/errors", "prettier"],
   "rules": {
-    "no-console": 1,
-    "no-debugger": 1,
-    "no-unused-vars": 1,
-    "no-import-assign": 0
+    "no-console": 0,
+    "no-debugger": 0,
+    "no-unused-vars": 1
   },
   "parserOptions": {
     "ecmaVersion": 2021,
