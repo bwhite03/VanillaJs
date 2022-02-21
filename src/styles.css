@@ -135,3 +135,11 @@ tr:nth-child(odd) {
   justify-content: center;
   align-items: center;
 }
+
+select {
+  padding: 6px 14px;
+  border-radius: 8px;
+  outline: none;
+  border: 0;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+}

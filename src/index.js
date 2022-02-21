@@ -17,8 +17,14 @@ const state = {
 
 const getTotal = () => {
   return filteredData.reduce((acc, cur) => {
-    return acc + cur.price;
+    return +acc + +cur.price;
   }, 0);
+};
+
+const clearForm = () => {
+  Object.keys(state.currentItem).map((key) => {
+    document.getElementById(key).value = '';
+  });
 };
 
 const getCheapestItem = () => {
@@ -202,3 +208,28 @@ const pipedFn = compose(
   curriedFilter
 )('beverages');
 console.log(pipedFn);
+
+const saveItem = () => {
+  const copiedItems = [...state.items, state.currentItem];
+  state.item = copiedItems;
+  filteredData = copiedItems;
+  buildTable();
+  clearForm();
+};
+
+const saveButton = document.getElementById('save-item');
+saveButton.addEventListener('click', saveItem);
+
+const createItemCategory = () => {
+  const categories = data.unique('category');
+  let html = `<select id="category"><option value="0">Select a category</option>`;
+  categories.map((c) => {
+    html += `<option value="${c}">${c}</option>`;
+  });
+  html += `</select>`;
+  document.getElementById('item-category').innerHTML = html;
+  const newSelect = document.getElementById('category');
+  newSelect.addEventListener('change', changeState);
+};
+
+createItemCategory();
