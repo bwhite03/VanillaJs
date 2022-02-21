@@ -10,7 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "css-loader": "^6.6.0",
     "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.5.3",
     "prettier": "^2.5.1",
     "webpack": "^5.69.1",
     "webpack-cli": "^4.9.2",
