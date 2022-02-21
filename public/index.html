@@ -8,7 +8,39 @@
   </head>
   <body>
     <div class="wrapper">
-      <h2>This is our document</h2>
+      <h2>Welcome to Vanilla Javascript</h2>
+      <div class="new-item">
+        <div class="row">
+          <div class="col-2">
+            <label>Name:</label>
+            <input id="name" type="text" />
+          </div>
+          <div class="col-2">
+            <label>Size:</label>
+            <input id="size" type="text" />
+          </div>
+        </div>
+        <div class="new-item">
+          <div class="row">
+            <div class="col-2">
+              <label>Price:</label>
+              <input id="price" type="text" />
+            </div>
+            <div class="col-2">
+              <label>Category:</label>
+              <div id="item-category"></div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <button class="btn" id="save-item">Save Item</button>
+          </div>
+
+          <div id="filter" class="filter-div"></div>
+          <div id="items"></div>
+          <div id="stats"></div>
+
+      </div>
     </div>
   </body>
 </html>
