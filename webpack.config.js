@@ -15,6 +15,9 @@ module.exports = {
   devServer: {
     static: './dist',
     port: 3008,
+    client: {
+      overlay: false,
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
