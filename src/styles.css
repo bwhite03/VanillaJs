@@ -111,3 +111,19 @@ tr:nth-child(even) {
 tr:nth-child(odd) {
   background-color: #fff;
 }
+
+.filter-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.filter-div select {
+  padding: 6px 14px;
+  border-radius: 8px;
+  outline: none;
+  border: 0;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0, 3);
+}
