@@ -41,3 +41,16 @@ const inputs = document.getElementsByTagName('input');
 for (let input of inputs) {
   input.addEventListener('change', changeState);
 }
+
+const buildTable = () => {
+  let html = `<table style="width: 90%; margin: 20px auto; color: #000">`;
+  html += `<tr><th>Product</th><th>Size</th><th>Price</th><th>Category</th><th>Delete</th></tr>`;
+  filteredData.map((item) => {
+    const [name, id, price, size, category] = item;
+    html += `<tr><td>${name}</td><td>${size}</td><td>${price}</td><td>${category}</td><td style="cursor: pointer;" onClick="deleteItem(${id})">Delete</td></tr>`;
+  });
+  html += '</table>';
+  document.getElementById('items').innerHTML = html;
+};
+
+buildTable();
