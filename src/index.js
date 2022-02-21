@@ -124,3 +124,20 @@ const candy = curriedFilter('candy');
 console.log('fruits', fruits);
 console.log('bevs', bevs);
 console.log('candy', candy);
+
+const findCategoryMostExpensiveItem = (array) => {
+  return array.reduce((acc, cur) => {
+    return acc.price > cur.price ? acc : cur;
+  }, 0);
+};
+
+const compose =
+  (...fns) =>
+  (...args) =>
+    fns.reduceRight((res, fn) => [fn.call(null, ...res)], args)[0];
+
+const pipedFn = compose(
+  findCategoryMostExpensiveItem,
+  curriedFilter
+)('beverages');
+console.log(pipedFn);
