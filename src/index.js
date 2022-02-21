@@ -1,5 +1,5 @@
 console.log('code is up and running');
-import { isValid } from './utils';
+import { isValid, formatMoney } from './utils';
 import { data } from './data';
 import './styles.css';
 
@@ -13,6 +13,60 @@ const state = {
     price: 0,
     category: '',
   },
+};
+
+const getTotal = () => {
+  return filteredData.reduce((acc, cur) => {
+    return acc + cur.price;
+  }, 0);
+};
+
+const getCheapestItem = () => {
+  return filteredData.reduce((acc, cur) => {
+    if (acc.price < cur.price) {
+      return acc;
+    } else {
+      return cur;
+    }
+  }, 9999);
+};
+
+const displayCheapestItem = () => {
+  const parent = document.getElementById('stats');
+  const divName = 'cheapest-div';
+  const existing = document.getElementById(divName);
+  if (existing) {
+    parent.removeChild(existing);
+  }
+  const cheapest = getCheapestItem();
+  const div = document.createElement('div');
+  div.id = divName;
+  div.innerHTML = `The cheapest item is ${cheapest.name} and it is ${cheapest.price}`;
+  parent.appendChild(div);
+};
+
+const mostExpensiveItem = () => {
+  return filteredData.reduce((acc, cur) => {
+    if (acc.price > cur.price) {
+      return acc;
+    } else {
+      return cur;
+    }
+  }, 0);
+};
+
+const displayMostExpensive = () => {
+  const parent = document.getElementById('stats');
+  const divName = 'most-expensive';
+  const existing = document.getElementById(divName);
+  if (existing) {
+    parent.removeChild(existing);
+  }
+  const highest = mostExpensiveItem();
+  const div = document.createElement('div');
+  div.id = divName;
+  div.innerHTML = `The most expensive item is ${highest.name} and it is ${highest.price}`;
+  parent.appendChild(div);
 };
 
 const buildDeleteLinks = () => {
@@ -56,11 +110,18 @@ const buildTable = () => {
   html += `<tr><th>Product</th><th>Size</th><th>Price</th><th>Category</th><th>Delete</th></tr>`;
   filteredData.map((item) => {
     const { name, id, price, size, category } = item;
-    html += `<tr><td>${name}</td><td>${size}</td><td>${price}</td><td>${category}</td><td id="tr-${id}" data-delete="${id}" style="cursor: pointer;">Delete</td></tr>`;
+    html += `<tr><td>${name}</td><td>${size}</td><td>${formatMoney(
+      price
+    )}</td><td>${category}</td><td id="tr-${id}" data-delete="${id}" style="cursor: pointer;">Delete</td></tr>`;
   });
+  html += `<tr><td colspan="2"></td><td>${formatMoney(
+    getTotal()
+  )}</td><td colspan="2"></td></tr>`;
   html += '</table>';
   document.getElementById('items').innerHTML = html;
   buildDeleteLinks();
+  displayCheapestItem();
+  displayMostExpensive();
 };
 
 buildTable();
