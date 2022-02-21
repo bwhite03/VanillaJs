@@ -20,3 +20,64 @@ body {
   background: linear-gradient(to bottom right, #7b0c6e, #626cbe);
   color: #fff;
 }
+
+h2 {
+  width: 100%;
+  text-align: center;
+}
+
+.btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  outline: none;
+  border: 0;
+  margin-top: 10px;
+  background-color: #e0b414;
+  color: #000;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+btn:hover {
+  background-color: #dfc25a;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+input {
+  padding: 5px 8px;
+  border-radius: 7px;
+  outline: none;
+  border: 0;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.col-2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+label {
+  min-width: 100px;
+  display: block;
+  text-align: left;
+  margin-left: -80px;
+}
+
+.new-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
