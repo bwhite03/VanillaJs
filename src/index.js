@@ -15,6 +15,15 @@ const state = {
   },
 };
 
+const buildDeleteLinks = () => {
+  const deletes = document.querySelectorAll('td[data-delete]');
+  for (let del of deletes) {
+    del.addEventListener('click', (e) => {
+      deleteItem(+e.currentTarget.id.substring(3));
+    });
+  }
+};
+
 const changeState = (element) => {
   const { id, value } = element.target;
   if (!isValid(value) || !isValid(id)) return;
@@ -47,10 +56,11 @@ const buildTable = () => {
   html += `<tr><th>Product</th><th>Size</th><th>Price</th><th>Category</th><th>Delete</th></tr>`;
   filteredData.map((item) => {
     const { name, id, price, size, category } = item;
-    html += `<tr><td>${name}</td><td>${size}</td><td>${price}</td><td>${category}</td><td style="cursor: pointer;" onClick="deleteItem(${id})">Delete</td></tr>`;
+    html += `<tr><td>${name}</td><td>${size}</td><td>${price}</td><td>${category}</td><td id="tr-${id}" data-delete="${id}" style="cursor: pointer;">Delete</td></tr>`;
   });
   html += '</table>';
   document.getElementById('items').innerHTML = html;
+  buildDeleteLinks();
 };
 
 buildTable();
@@ -88,3 +98,15 @@ const buildFilterBox = () => {
 };
 
 buildFilterBox();
+
+const deleteItem = (id) => {
+  const itemIndex = state.items.findIndex((i) => i.id === id);
+
+  if (itemIndex && itemIndex > 0) {
+    const copiedItems = Array.from(state.items);
+    copiedItems.splice(itemIndex, 1);
+    state.items = copiedItems;
+    filteredData = copiedItems;
+    buildTable();
+  }
+};
