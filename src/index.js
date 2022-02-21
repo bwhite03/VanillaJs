@@ -15,6 +15,11 @@ window.addEventListener('onCategoriesLoaded', () => {
   runCategoryCode();
 });
 
+const toastContainer = document.createElement('div');
+toastContainer.id = 'toastContainer';
+toastContainer.classList.add('toast-container');
+document.body.appendChild(toastContainer);
+
 let data = [];
 let filteredData = data;
 
@@ -259,9 +264,9 @@ function runSampleCode() {
   const fruits = curriedFilter('fruit');
   const bevs = curriedFilter('beverages');
   const candy = curriedFilter('candy');
-  console.log('fruits', fruits);
-  console.log('bevs', bevs);
-  console.log('candy', candy);
+  createToast([...fruits], 'fruits');
+  createToast([...bevs], 'bevs');
+  createToast([...candy], 'candy');
 
   const findCategoryMostExpensiveItem = (array) => {
     return array.reduce((acc, cur) => {
@@ -295,3 +300,46 @@ function runCategoryCode() {
 
   createItemCategory();
 }
+
+const createToast = (text, title = '', duration = 4000, type) => {
+  const toastElement = document.createElement('div');
+  toastElement.classList.add('toast');
+  if (type) toastElement.classList.add(type);
+
+  const titleElem = document.createElement('p');
+  titleElem.classList.add('t-title');
+  titleElem.innerHTML = title;
+  toastElement.appendChild(titleElem);
+
+  const textElem = document.createElement('p');
+  textElem.classList.add('t-text');
+  if (Array.isArray(text)) {
+    const s = text
+      .map((s) => {
+        if (typeof s == 'object') {
+          return s.name;
+        } else {
+          return s;
+        }
+      })
+      .join(', ');
+    textElem.innerHTML = s;
+  } else {
+    textElem.innerHTML = text;
+  }
+
+  toastElement.appendChild(textElem);
+  const toastContainer = document.getElementById('toastContainer');
+  toastContainer.appendChild(toastElement);
+
+  setTimeout(() => {
+    toastElement.classList.add('active');
+  }, 1);
+
+  setTimeout(() => {
+    toastElement.classList.remove('active');
+    setTimeout(() => {
+      toastElement.remove();
+    }, 350);
+  }, duration);
+};
